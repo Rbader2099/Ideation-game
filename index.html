@@ -37,11 +37,17 @@
   cursor: pointer;
   margin-bottom: 10px; /* Adds a little spacing */
 }
-    .deck .card-face img {
-      margin-top: 10px;
-      z-index: 0;
-      position: relative;
-    }
+    .deck .card-face {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.deck .card-face img {
+  width: 250px;
+  height: auto;
+}
   </style>
 </head>
 <body>
@@ -81,7 +87,8 @@
       backImg.style.opacity = 0;
       setTimeout(() => backImg.style.display = 'none', 400);
 
-      document.getElementById(`card${deckNumber}`).innerHTML = `<img src="${cardImg}" alt="Drawn Card">`;
+      document.getElementById(`card${deckNumber}`).insertAdjacentHTML('beforeend',
+  `<img src="${cardImg}" alt="Drawn Card">`);
     }
   </script>
 </body>
