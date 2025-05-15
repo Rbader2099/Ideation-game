@@ -12,11 +12,13 @@
       background: #f5f5f5;
     }
     .game-board {
-      display: flex;
-      justify-content: center;
-      gap: 40px;
-      margin-top: 50px;
-    }
+  display: flex;
+  flex-wrap: wrap;              /* Allow cards to wrap to new lines */
+  justify-content: center;      /* Center items horizontally */
+  gap: 40px;                    /* Space between cards */
+  margin: 50px auto;
+  max-width: 1000px;            /* Optional: limit total width */
+}
     .deck {
       position: relative;
       display: flex;
