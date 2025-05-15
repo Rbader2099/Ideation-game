@@ -74,22 +74,22 @@
 };
 
 
-    function drawCard(deckNumber) {
-      const deck = decks[deckNumber];
-      if (deck.length === 0) {
-        alert("No more cards in this deck!");
-        return;
-      }
-      const randomIndex = Math.floor(Math.random() * deck.length);
-      const cardImg = deck.splice(randomIndex, 1)[0];
+   function drawCard(deckNumber) {
+  const deck = decks[deckNumber];
+  if (deck.length === 0) {
+    alert("No more cards in this deck!");
+    return;
+  }
+  const randomIndex = Math.floor(Math.random() * deck.length);
+  const cardImg = deck.splice(randomIndex, 1)[0];
 
-      const backImg = document.getElementById(`back${deckNumber}`);
-      backImg.style.opacity = 0;
-      setTimeout(() => backImg.style.display = 'none', 400);
+  // Keep the back image visible!
+  document.getElementById(`card${deckNumber}`).insertAdjacentHTML(
+    'beforeend',
+    `<img src="${cardImg}" alt="Drawn Card">`
+  );
+}
 
-      document.getElementById(`card${deckNumber}`).insertAdjacentHTML('beforeend',
-  `<img src="${cardImg}" alt="Drawn Card">`);
-    }
   </script>
 </body>
 </html>
