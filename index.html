@@ -7,102 +7,123 @@
   <link rel="stylesheet" href="style.css" />
   <style>
     body {
-  font-family: sans-serif;
-  text-align: center;
-  background: url(images/background.jpg) no-repeat center center fixed;
-  background-size: cover;
-  color: #000; /* ensures text stays readable */
-}
-
-    .deck .card-face img,
-.deck .back-img {
-  border-radius: 16px; /* Round the corners of all cards */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Optional: adds depth */
-}
+      font-family: sans-serif;
+      text-align: center;
+      background: url(images/background.jpg) no-repeat center center fixed;
+      background-size: cover;
+      color: #000;
+      margin: 0;
+      padding: 0;
+    }
 
     .game-board {
-  display: flex;
-  flex-wrap: wrap;              /* Allow cards to wrap to new lines */
-  justify-content: center;      /* Center items horizontally */
-  gap: 40px;                    /* Space between cards */
-  margin: 50px auto;
-  max-width: 1000px;            /* Optional: limit total width */
-}
-  .deck {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 250px; /* Same as image width */
-}
-    .deck .back-img, .card-face img {
-      width: 250px;
-      height: auto;
-      transition: opacity 0.4s ease;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 40px;
+      margin: 50px auto;
+      max-width: 1000px;
     }
-    .deck .back-img {
-  position: static;
-  z-index: 1;
-  cursor: pointer;
-  margin-bottom: 10px; /* Adds a little spacing */
-}
-   .deck .card-face {
-  display: flex;
-  flex-direction: column-reverse; /* <- This flips the order */
-  gap: 10px;
-  margin-top: 50px;               /* <-- Increase this to push revealed cards lower */
-  max-height: 370px;              /* Optional: control vertical space */
-  overflow: hidden;               /* Hide older cards */
-}
 
+    .card-container {
+      perspective: 1000px;
+      width: 250px;
+      height: 370px;
+      cursor: pointer;
+    }
 
-.deck .card-face img {
-  width: 250px;
-  height: auto;
-}
+    .card {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.8s ease;
+    }
+
+    .card.flipped {
+      transform: rotateY(180deg);
+    }
+
+    .card-face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 16px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card-face.front img,
+    .card-face.back img {
+      width: 100%;
+      height: auto;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-face.back {
+      transform: rotateY(180deg);
+    }
   </style>
 </head>
 <body>
   <audio id="flipSound" src="flipcard.mp3" preload="auto"></audio>
   <h1>Ideation Card Game</h1>
   <div class="game-board">
-    <div class="deck" id="deck1">
-      <img class="back-img" id="back1" src="deck1/back.png" alt="Draw Deck 1" onclick="drawCard(1)" />
-      <div class="card-face" id="card1"></div>
+    <div class="card-container" onclick="drawCard(1)">
+      <div class="card" id="cardWrapper1">
+        <div class="card-face front">
+          <img src="deck1/back.png" alt="Draw Deck 1" />
+        </div>
+        <div class="card-face back" id="card1"></div>
+      </div>
     </div>
-    <div class="deck" id="deck2">
-      <img class="back-img" id="back2" src="deck2/back.png" alt="Draw Deck 2" onclick="drawCard(2)" />
-      <div class="card-face" id="card2"></div>
+    <div class="card-container" onclick="drawCard(2)">
+      <div class="card" id="cardWrapper2">
+        <div class="card-face front">
+          <img src="deck2/back.png" alt="Draw Deck 2" />
+        </div>
+        <div class="card-face back" id="card2"></div>
+      </div>
     </div>
-    <div class="deck" id="deck3">
-      <img class="back-img" id="back3" src="deck3/back.png" alt="Draw Deck 3" onclick="drawCard(3)" />
-      <div class="card-face" id="card3"></div>
+    <div class="card-container" onclick="drawCard(3)">
+      <div class="card" id="cardWrapper3">
+        <div class="card-face front">
+          <img src="deck3/back.png" alt="Draw Deck 3" />
+        </div>
+        <div class="card-face back" id="card3"></div>
+      </div>
     </div>
   </div>
+
   <script>
     const decks = {
-  1: Array.from({ length: 29 }, (_, i) => `deck1/${i + 1}.png`),
-  2: Array.from({ length: 23 }, (_, i) => `deck2/${i + 1}.png`),
-  3: Array.from({ length: 19 }, (_, i) => `deck3/${i + 1}.png`)
-};
+      1: Array.from({ length: 29 }, (_, i) => `deck1/${i + 1}.png`),
+      2: Array.from({ length: 23 }, (_, i) => `deck2/${i + 1}.png`),
+      3: Array.from({ length: 19 }, (_, i) => `deck3/${i + 1}.png`)
+    };
 
+    function drawCard(deckNumber) {
+      document.getElementById('flipSound').play();
 
-  function drawCard(deckNumber) {
-  document.getElementById('flipSound').play();
+      const deck = decks[deckNumber];
+      if (deck.length === 0) {
+        alert("No more cards in this deck!");
+        return;
+      }
 
-  const deck = decks[deckNumber];
-  if (deck.length === 0) {
-    alert("No more cards in this deck!");
-    return;
-  }
-  const randomIndex = Math.floor(Math.random() * deck.length);
-  const cardImg = deck.splice(randomIndex, 1)[0];
+      const randomIndex = Math.floor(Math.random() * deck.length);
+      const cardImg = deck.splice(randomIndex, 1)[0];
 
-  document.getElementById(`card${deckNumber}`).insertAdjacentHTML(
-    'afterbegin',
-    `<img src="${cardImg}" alt="Drawn Card">`
-  );
-}
+      const cardFace = document.getElementById(`card${deckNumber}`);
+      cardFace.innerHTML = `<img src="${cardImg}" alt="Drawn Card">`;
+
+      const cardWrapper = document.getElementById(`cardWrapper${deckNumber}`);
+      cardWrapper.classList.add('flipped');
+    }
   </script>
 </body>
 </html>
