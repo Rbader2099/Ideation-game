@@ -37,12 +37,15 @@
   cursor: pointer;
   margin-bottom: 10px; /* Adds a little spacing */
 }
-    .deck .card-face {
+   .deck .card-face {
   display: flex;
-  flex-direction: column;
+  flex-direction: column-reverse; /* <- This flips the order */
   gap: 10px;
   margin-top: 20px;
+  max-height: 250px;              /* Optional: control vertical space */
+  overflow: hidden;               /* Hide older cards */
 }
+
 
 .deck .card-face img {
   width: 250px;
