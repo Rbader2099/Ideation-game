@@ -87,10 +87,10 @@
   const cardImg = deck.splice(randomIndex, 1)[0];
 
   // Keep the back image visible!
-  document.getElementById(`card${deckNumber}`).insertAdjacentHTML(
-    'beforeend',
-    `<img src="${cardImg}" alt="Drawn Card">`
-  );
+ document.getElementById(`card${deckNumber}`).insertAdjacentHTML(
+  'afterbegin',
+  `<img src="${cardImg}" alt="Drawn Card">`
+);
 }
 
   </script>
