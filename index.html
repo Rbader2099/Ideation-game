@@ -118,36 +118,47 @@
       3: Array.from({ length: 19 }, (_, i) => `deck3/${i + 1}.png`)
     };
 
-    function drawCard(deckNumber) {
-      document.getElementById('flipSound').play();
+   function drawCard(deckNumber) {
+  document.getElementById('flipSound').play();
 
-      const deck = decks[deckNumber];
-      if (deck.length === 0) {
-        alert("No more cards in this deck!");
-        return;
-      }
+  const deck = decks[deckNumber];
+  if (deck.length === 0) {
+    alert("No more cards in this deck!");
+    return;
+  }
 
-      const randomIndex = Math.floor(Math.random() * deck.length);
-      const cardImg = deck.splice(randomIndex, 1)[0];
+  const randomIndex = Math.floor(Math.random() * deck.length);
+  const cardImg = deck.splice(randomIndex, 1)[0];
 
-      // Create and animate temporary flip card
-      const tempCard = document.createElement('img');
-      tempCard.src = cardImg;
-      tempCard.alt = "Flipping Card";
-      tempCard.className = 'card-flip';
+  const backImg = document.getElementById(`back${deckNumber}`);
+  const rect = backImg.getBoundingClientRect();
 
-      const deckElement = document.getElementById(`deck${deckNumber}`);
-      deckElement.appendChild(tempCard);
+  // Create animated card and absolutely position it over the deck
+  const tempCard = document.createElement('img');
+  tempCard.src = cardImg;
+  tempCard.alt = "Flipping Card";
+  tempCard.className = 'card-flip';
 
-      // After animation, insert drawn card below the deck back
-      setTimeout(() => {
-        document.getElementById(`card${deckNumber}`).insertAdjacentHTML(
-          'afterbegin',
-          `<img src="${cardImg}" alt="Drawn Card">`
-        );
-        tempCard.remove();
-      }, 1000); // Match animation duration
-    }
+  Object.assign(tempCard.style, {
+    position: 'fixed',
+    top: `${rect.top}px`,
+    left: `${rect.left}px`,
+    width: `${rect.width}px`,
+    height: `${rect.height}px`
+  });
+
+  document.body.appendChild(tempCard);
+
+  // After animation ends, append drawn card to deck face and remove animated card
+  setTimeout(() => {
+    document.getElementById(`card${deckNumber}`).insertAdjacentHTML(
+      'afterbegin',
+      `<img src="${cardImg}" alt="Drawn Card">`
+    );
+    tempCard.remove();
+  }, 1000);
+}
+
   </script>
 </body>
 </html>
