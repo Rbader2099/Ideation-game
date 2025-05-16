@@ -54,7 +54,8 @@
   </style>
 </head>
 <body>
-  <h1>Card Draw Game</h1>
+  <audio id="flipSound" src="flipcard.mp3" preload="auto"></audio>
+  <h1>Ideation Card Game</h1>
   <div class="game-board">
     <div class="deck" id="deck1">
       <img class="back-img" id="back1" src="deck1/back.png" alt="Draw Deck 1" onclick="drawCard(1)" />
@@ -77,7 +78,9 @@
 };
 
 
-   function drawCard(deckNumber) {
+  function drawCard(deckNumber) {
+  document.getElementById('flipSound').play();
+
   const deck = decks[deckNumber];
   if (deck.length === 0) {
     alert("No more cards in this deck!");
@@ -86,13 +89,11 @@
   const randomIndex = Math.floor(Math.random() * deck.length);
   const cardImg = deck.splice(randomIndex, 1)[0];
 
-  // Keep the back image visible!
- document.getElementById(`card${deckNumber}`).insertAdjacentHTML(
-  'afterbegin',
-  `<img src="${cardImg}" alt="Drawn Card">`
-);
+  document.getElementById(`card${deckNumber}`).insertAdjacentHTML(
+    'afterbegin',
+    `<img src="${cardImg}" alt="Drawn Card">`
+  );
 }
-
   </script>
 </body>
 </html>
