@@ -104,20 +104,22 @@
   const cardImg = deck.splice(randomIndex, 1)[0];
 
   const backImg = document.getElementById(`back${deckNumber}`);
-  const cardStack = document.getElementById(`card${deckNumber}`);
+  const backRect = backImg.getBoundingClientRect();
 
-  const rectStart = backImg.getBoundingClientRect();
-  const rectEnd = cardStack.getBoundingClientRect();
+  const stackContainer = document.getElementById(`card${deckNumber}`);
+  const stackRect = stackContainer.getBoundingClientRect();
 
-  const translateY = rectEnd.top - rectStart.top;
+  const translateY = stackRect.top - backRect.top;
 
-  // Create keyframes dynamically
-  const animName = `flipDrop${Date.now()}`;
+  // Generate a unique animation name
+  const animationName = `flipDrop_${Date.now()}`;
+
+  // Create the keyframes
   const styleSheet = document.styleSheets[0];
   styleSheet.insertRule(`
-    @keyframes ${animName} {
+    @keyframes ${animationName} {
       0% {
-        transform: rotateX(0deg) translateY(0);
+        transform: rotateX(0deg) translateY(0px);
         opacity: 1;
       }
       50% {
@@ -131,36 +133,39 @@
     }
   `, styleSheet.cssRules.length);
 
-  // Create animated card
+  // Create the flipping card
   const tempCard = document.createElement('img');
   tempCard.src = cardImg;
   tempCard.alt = "Flipping Card";
   tempCard.className = 'card-flip';
 
+  // Set position and animation inline
   Object.assign(tempCard.style, {
     position: 'fixed',
-    top: `${rectStart.top}px`,
-    left: `${rectStart.left}px`,
-    width: `${rectStart.width}px`,
-    height: `${rectStart.height}px`,
-    animation: `${animName} 0.9s ease forwards`,
+    top: `${backRect.top}px`,
+    left: `${backRect.left}px`,
+    width: `${backRect.width}px`,
+    height: `${backRect.height}px`,
+    animation: `${animationName} 0.9s ease forwards`,
     transformOrigin: 'top center',
     zIndex: 1000,
     borderRadius: '16px',
-    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)'
+    boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+    pointerEvents: 'none'
   });
 
   document.body.appendChild(tempCard);
 
-  // After animation ends, add the card and clean up
+  // Drop the final card after animation
   setTimeout(() => {
-    cardStack.insertAdjacentHTML(
+    stackContainer.insertAdjacentHTML(
       'afterbegin',
       `<img src="${cardImg}" alt="Drawn Card">`
     );
     tempCard.remove();
-  }, 950); // match animation duration
+  }, 950);
 }
+
 
 
   </script>
