@@ -109,7 +109,7 @@
   const stackContainer = document.getElementById(`card${deckNumber}`);
   const stackRect = stackContainer.getBoundingClientRect();
 
-  const translateY = stackRect.top - backRect.top;
+  const translateY = Math.max(stackRect.top - backRect.top, 120);
 
   // Generate a unique animation name
   const animationName = `flipDrop_${Date.now()}`;
