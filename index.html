@@ -91,7 +91,7 @@
       3: Array.from({ length: 19 }, (_, i) => `deck3/${i + 1}.png`)
     };
 
-   function drawCard(deckNumber) {
+function drawCard(deckNumber) {
   document.getElementById('flipSound').play();
 
   const deck = decks[deckNumber];
@@ -114,32 +114,33 @@
   // Generate a unique animation name
   const animationName = `flipDrop_${Date.now()}`;
 
-  // Create the keyframes
+  // Inject keyframes that animate the "top" position instead of translateY
   const styleSheet = document.styleSheets[0];
   styleSheet.insertRule(`
     @keyframes ${animationName} {
       0% {
-        transform: rotateX(0deg) translateY(0px);
+        top: ${backRect.top}px;
+        transform: rotateX(0deg);
         opacity: 1;
       }
       50% {
-        transform: rotateX(90deg) translateY(${translateY / 2}px);
+        top: ${backRect.top + translateY / 2}px;
+        transform: rotateX(90deg);
         opacity: 1;
       }
       100% {
-        transform: rotateX(180deg) translateY(${translateY}px);
+        top: ${backRect.top + translateY}px;
+        transform: rotateX(180deg);
         opacity: 0;
       }
     }
   `, styleSheet.cssRules.length);
 
-  // Create the flipping card
   const tempCard = document.createElement('img');
   tempCard.src = cardImg;
   tempCard.alt = "Flipping Card";
   tempCard.className = 'card-flip';
 
-  // Set position and animation inline
   Object.assign(tempCard.style, {
     position: 'fixed',
     top: `${backRect.top}px`,
@@ -156,7 +157,6 @@
 
   document.body.appendChild(tempCard);
 
-  // Drop the final card after animation
   setTimeout(() => {
     stackContainer.insertAdjacentHTML(
       'afterbegin',
