@@ -227,9 +227,9 @@
     }
 
     function updateHistoryLog(deckNumber) {
-      const container = document.getElementById(`history${deckNumber}`);
-      container.innerHTML = drawHistory[deckNumber].slice().reverse().map(name => `<li>${name}</li>`).join('');
-    }
+  // History logging has been disabled
+}
+
 
     function shuffle(array) {
       for (let i = array.length - 1; i > 0; i--) {
