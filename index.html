@@ -71,24 +71,24 @@
   <h1>Ideation Card Game</h1>
   <div class="game-board">
     <div class="deck" id="deck1">
-      <img class="back-img" id="back1" src="deck1/back.png" alt="Draw Deck 1" onclick="drawCard(1)" />
+      <img class="back-img" id="back1" src="deck1/back.jpg" alt="Draw Deck 1" onclick="drawCard(1)" />
       <div class="card-face" id="card1"></div>
     </div>
     <div class="deck" id="deck2">
-      <img class="back-img" id="back2" src="deck2/back.png" alt="Draw Deck 2" onclick="drawCard(2)" />
+      <img class="back-img" id="back2" src="deck2/back.jpg" alt="Draw Deck 2" onclick="drawCard(2)" />
       <div class="card-face" id="card2"></div>
     </div>
     <div class="deck" id="deck3">
-      <img class="back-img" id="back3" src="deck3/back.png" alt="Draw Deck 3" onclick="drawCard(3)" />
+      <img class="back-img" id="back3" src="deck3/back.jpg" alt="Draw Deck 3" onclick="drawCard(3)" />
       <div class="card-face" id="card3"></div>
     </div>
   </div>
 
   <script>
     const decks = {
-      1: Array.from({ length: 29 }, (_, i) => `deck1/${i + 1}.png`),
-      2: Array.from({ length: 23 }, (_, i) => `deck2/${i + 1}.png`),
-      3: Array.from({ length: 19 }, (_, i) => `deck3/${i + 1}.png`)
+      1: Array.from({ length: 29 }, (_, i) => `deck1/${i + 1}.jpg`),
+      2: Array.from({ length: 23 }, (_, i) => `deck2/${i + 1}.jpg`),
+      3: Array.from({ length: 19 }, (_, i) => `deck3/${i + 1}.jpg`)
     };
 
 function drawCard(deckNumber) {
