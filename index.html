@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Card Deck Game</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      background: url(images/background.jpg) no-repeat center center fixed;
+      background-size: cover;
+      color: #000;
+      margin: 0;
+      padding: 0;
+    }
+
+    .game-board {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 40px;
+      margin: 50px auto;
+      max-width: 1000px;
+    }
+
+    .deck {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 250px;
+      min-height: 500px;
+    }
+
+    .back-img {
+      width: 250px;
+      height: auto;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      cursor: pointer;
+      z-index: 1;
+    }
+
+    .card-face {
+      display: flex;
+      flex-direction: column-reverse;
+      gap: 10px;
+      margin-top: 20px;
+      max-height: 370px;
+      overflow: hidden;
+    }
+
+    .card-face img {
+      width: 250px;
+      height: auto;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-flip {
+      transform-style: preserve-3d;
+    }
+
+    .deck-controls {
+      margin-top: 10px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .deck-controls button {
+      padding: 6px 12px;
+      border: none;
+      background-color: #336699;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.9em;
+    }
+
+    .deck-controls button:hover {
+      background-color: #28527a;
+    }
+
+    .history-log {
+      list-style: none;
+      padding-left: 0;
+      font-size: 0.8em;
+      margin-top: 5px;
+      max-height: 80px;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body>
+  <audio id="flipSound" src="flipcard.mp3" preload="auto"></audio>
+  <h1>Ideation Card Game</h1>
+  <div class="game-board">
+    <div class="deck" id="deck1">
+      <img class="back-img" id="back1" src="deck1/back.jpg" alt="Draw Deck 1" onclick="drawCard(1)" />
+      <div class="card-face" id="card1"></div>
+      <div class="deck-controls">
+        <button onclick="drawCard(1)">Draw</button>
+        <button onclick="undoLastCard(1)">Undo</button>
+        <button onclick="resetDeck(1)">Reset</button>
+      </div>
+      <ul id="history1" class="history-log"></ul>
+    </div>
+    <div class="deck" id="deck2">
+      <img class="back-img" id="back2" src="deck2/back.jpg" alt="Draw Deck 2" onclick="drawCard(2)" />
+      <div class="card-face" id="card2"></div>
+      <div class="deck-controls">
+        <button onclick="drawCard(2)">Draw</button>
+        <button onclick="undoLastCard(2)">Undo</button>
+        <button onclick="resetDeck(2)">Reset</button>
+      </div>
+      <ul id="history2" class="history-log"></ul>
+    </div>
+    <div class="deck" id="deck3">
+      <img class="back-img" id="back3" src="deck3/back.jpg" alt="Draw Deck 3" onclick="drawCard(3)" />
+      <div class="card-face" id="card3"></div>
+      <div class="deck-controls">
+        <button onclick="drawCard(3)">Draw</button>
+        <button onclick="undoLastCard(3)">Undo</button>
+        <button onclick="resetDeck(3)">Reset</button>
+      </div>
+      <ul id="history3" class="history-log"></ul>
+    </div>
+  </div>
+
+  <script>
+    const originalDecks = {
+      1: Array.from({ length: 29 }, (_, i) => `deck1/${i + 1}.jpg`),
+      2: Array.from({ length: 23 }, (_, i) => `deck2/${i + 1}.jpg`),
+      3: Array.from({ length: 19 }, (_, i) => `deck3/${i + 1}.jpg`)
+    };
+
+    const decks = {
+      1: [...originalDecks[1]],
+      2: [...originalDecks[2]],
+      3: [...originalDecks[3]]
+    };
+
+    const drawHistory = { 1: [], 2: [], 3: [] };
+
+    function drawCard(deckNumber) {
+      document.getElementById('flipSound').play();
+
+      if (decks[deckNumber].length === 0) {
+        decks[deckNumber] = shuffle([...originalDecks[deckNumber]]);
+      }
+
+      const randomIndex = Math.floor(Math.random() * decks[deckNumber].length);
+      const cardImg = decks[deckNumber].splice(randomIndex, 1)[0];
+      drawHistory[deckNumber].push(cardImg);
+      updateHistoryLog(deckNumber);
+
+      const backImg = document.getElementById(`back${deckNumber}`);
+      const backRect = backImg.getBoundingClientRect();
+
+      const stackContainer = document.getElementById(`card${deckNumber}`);
+      const stackRect = stackContainer.getBoundingClientRect();
+      const translateY = Math.max(stackRect.top - backRect.top, 120);
+
+      const animationName = `flipDrop_${Date.now()}`;
+      const styleSheet = document.styleSheets[0];
+      styleSheet.insertRule(`
+        @keyframes ${animationName} {
+          0% {
+            top: ${backRect.top}px;
+            transform: rotateX(0deg);
+            opacity: 1;
+          }
+          70% {
+            top: ${backRect.top + translateY * 0.7}px;
+            transform: rotateX(135deg);
+            opacity: 1;
+          }
+          100% {
+            top: ${backRect.top + translateY}px;
+            transform: rotateX(180deg) scaleY(-1);
+            opacity: 0;
+          }
+        }
+      `, styleSheet.cssRules.length);
+
+      const tempCard = document.createElement('img');
+      tempCard.src = cardImg;
+      tempCard.alt = "Flipping Card";
+      tempCard.className = 'card-flip';
+
+      Object.assign(tempCard.style, {
+        position: 'fixed',
+        top: `${backRect.top}px`,
+        left: `${backRect.left}px`,
+        width: `${backRect.width}px`,
+        height: `${backRect.height}px`,
+        animation: `${animationName} 1.5s ease forwards`,
+        transformOrigin: 'top center',
+        zIndex: 1000,
+        borderRadius: '16px',
+        boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+        pointerEvents: 'none'
+      });
+
+      document.body.appendChild(tempCard);
+
+      setTimeout(() => {
+        stackContainer.insertAdjacentHTML('afterbegin', `<img src="${cardImg}" alt="Drawn Card">`);
+        tempCard.remove();
+      }, 1500);
+    }
+
+    function undoLastCard(deckNumber) {
+      if (drawHistory[deckNumber].length === 0) return;
+      const lastCard = drawHistory[deckNumber].pop();
+      decks[deckNumber].push(lastCard);
+      document.querySelector(`#card${deckNumber} img`).remove();
+      updateHistoryLog(deckNumber);
+    }
+
+    function resetDeck(deckNumber) {
+      decks[deckNumber] = shuffle([...originalDecks[deckNumber]]);
+      drawHistory[deckNumber] = [];
+      document.getElementById(`card${deckNumber}`).innerHTML = '';
+      updateHistoryLog(deckNumber);
+    }
+
+    function updateHistoryLog(deckNumber) {
+      const container = document.getElementById(`history${deckNumber}`);
+      container.innerHTML = drawHistory[deckNumber].slice().reverse().map(name => `<li>${name}</li>`).join('');
+    }
+
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+  </script>
+</body>
+</html>
