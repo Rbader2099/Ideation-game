@@ -117,24 +117,24 @@ function drawCard(deckNumber) {
   // Inject keyframes that animate the "top" position instead of translateY
   const styleSheet = document.styleSheets[0];
   styleSheet.insertRule(`
-    @keyframes ${animationName} {
-      0% {
-        top: ${backRect.top}px;
-        transform: rotateX(0deg);
-        opacity: 1;
-      }
-      50% {
-        top: ${backRect.top + translateY / 2}px;
-        transform: rotateX(90deg);
-        opacity: 1;
-      }
-      100% {
-        top: ${backRect.top + translateY}px;
-        transform: rotateX(180deg);
-        opacity: 0;
-      }
+  @keyframes ${animationName} {
+    0% {
+      top: ${backRect.top}px;
+      transform: rotateX(0deg);
+      opacity: 1;
     }
-  `, styleSheet.cssRules.length);
+    70% {
+      top: ${backRect.top + translateY * 0.7}px;
+      transform: rotateX(135deg);
+      opacity: 1;
+    }
+    100% {
+      top: ${backRect.top + translateY}px;
+      transform: rotateX(180deg);
+      opacity: 0;
+    }
+  }
+`, styleSheet.cssRules.length);
 
   const tempCard = document.createElement('img');
   tempCard.src = cardImg;
